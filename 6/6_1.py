@@ -12,32 +12,30 @@ except Exception as e:
 
 count = 0
 
-directions = {
-    "up": True,
-    "right": False,
-    "down": False,
-    "left": False
-}
+is_up = True
+is_right = False
+is_down = False
+is_left = False
 
 def move(i, j):
-    global count, directions
-    while directions["up"] or directions["down"] or directions["left"] or directions["right"]:
-        if directions["down"]:
-            i, j = move_down(i, j)
-        elif directions["left"]:
-            i, j = move_left(i, j)
-        elif directions["right"]:
-            i, j = move_right(i, j)
-        elif directions["up"]:
+    global is_down, is_left, is_right, is_up, count
+    while is_down or is_left or is_right or is_up:
+        if is_up:
             i, j = move_up(i, j)
-
-    print(f"Final count: {count}")
+        elif is_right:
+            i, j = move_right(i, j)
+        elif is_down:
+            i, j = move_down(i, j)
+        elif is_left:
+            i, j = move_left(i, j)
+    print(count)
 
 def move_up(i, j):
-    global directions, count
-    if i - 1 < 0:  # Выход за верхнюю границу
+    global is_down, is_left, is_right, is_up, count
+    if i - 1 < 0:
         print(f"Out of bounds moving up from ({i}, {j}). Final count: {count}")
-        directions = False
+        is_up = False
+        return i, j
     elif data[i-1][j] == '.':
         data[i-1][j] = "X"
         count += 1
@@ -47,42 +45,16 @@ def move_up(i, j):
         print(f"Moved to already marked position {i-1}, {j}")
         return i-1, j
     elif data[i-1][j] == '#':
-        directions["up"] = False
-        directions["right"] = True
+        is_up = False
+        is_right = True
         print(f"Hit # at {i-1}, {j}")
-        return i, j
-    else:
-        print(f"Unhandled case at {i-1}, {j}")
-        return i, j
-        
-def move_down(i, j):
-    global directions, count
-    if i + 1 >= len(data):  # Выход за нижнюю границу
-        print(f"Out of bounds moving down from ({i}, {j}). Final count: {count}")
-        directions = False
-        return i, j
-    elif data[i+1][j] == '.':
-        data[i+1][j] = "X"
-        count += 1
-        print(f"Moved down to {i+1}, {j}")
-        return i+1, j
-    elif data[i+1][j] == 'X':
-        print(f"Moved to already marked position {i+1}, {j}")
-        return i+1, j
-    elif data[i+1][j] == '#':
-        directions["down"] = False
-        directions["left"] = True
-        print(f"Hit # at {i+1}, {j}")
-        return i, j
-    else:
-        print(f"Unhandled case at {i+1}, {j}")
         return i, j
 
 def move_right(i, j):
-    global directions, count
-    if j + 1 >= len(data[i]):  # Выход за правую границу
+    global is_down, is_left, is_right, is_up, count
+    if j + 1 >= len(data[i]):
         print(f"Out of bounds moving right from ({i}, {j}). Final count: {count}")
-        directions = False
+        is_right = False
         return i, j
     elif data[i][j+1] == '.':
         data[i][j+1] = "X"
@@ -93,40 +65,63 @@ def move_right(i, j):
         print(f"Moved to already marked position {i}, {j+1}")
         return i, j+1
     elif data[i][j+1] == '#':
-        directions["right"] = False
-        directions["down"] = True
+        is_right = False
+        is_down = True
         print(f"Hit # at {i}, {j+1}")
         return i, j
     else:
         print(f"Unhandled case at {i}, {j+1}")
         return i, j
 
-def move_left(i, j):
-    global directions, count
-    if j - 1 < 0:  # Выход за левую границу
-        print(f"Out of bounds moving left from ({i}, {j}). Final count: {count}")
-        directions = False
+def move_down(i, j):
+    global is_down, is_left, is_right, is_up, count
+    if i + 1 >= len(data):
+        print(f"Out of bounds moving down from ({i}, {j}). Final count: {count}")
+        is_down = False
         return i, j
-    elif data[i][j-1] == '.':
-        data[i][j-1] = "X"
+    elif data[i+1][j] == '.':
+        data[i+1][j] = "X"
+        count += 1
+        print(f"Moved down to {i+1}, {j}")
+        return i+1, j
+    elif data[i+1][j] == 'X':
+        print(f"Moved to already marked position {i+1}, {j}")
+        return i+1, j
+    elif data[i+1][j] == '#':
+        is_down = False
+        is_left = True
+        print(f"Hit # at {i+1}, {j}")
+        return i, j
+    else:
+        print(f"Unhandled case at {i+1}, {j}")
+        return i, j
+
+def move_left(i, j):
+    global is_down, is_left, is_right, is_up, count
+    if j - 1 < 0:
+        print(f"Out of bounds moving left from ({i}, {j}). Final count: {count}")
+        is_left = False
+        return i, j
+    elif data[i][j - 1] == '.':
+        data[i][j - 1] = "X"
         count += 1        
         print(f"Moved left to {i}, {j-1}")
-        return i, j-1
-    elif data[i][j-1] == 'X':
+        return i, j - 1
+    elif data[i][j - 1] == 'X':
         print(f"Moved to already marked position {i}, {j-1}")
-        return i, j-1
-    elif data[i][j-1] == '#':
-        directions["left"] = False
-        directions["up"] = True
+        return i, j - 1
+    elif data[i][j - 1] == '#':
+        is_left = False
+        is_up = True
         print(f"Hit # at {i}, {j-1}")
         return i, j
     else:
         print(f"Unhandled case at {i}, {j-1}")
         return i, j
 
-# Поиск начальной позиции '^'
 for i in range(len(data)):
     for j in range(len(data[i])):
         if data[i][j] == '^':
-            data[i][j] = '.'
+            data[i][j] = 'X'
+            count += 1
             move(i, j)
