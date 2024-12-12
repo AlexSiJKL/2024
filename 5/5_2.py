@@ -46,15 +46,37 @@ for i in range(len(update)):
     if found:
         update[i][1] = update[i].pop(0)  # Change the key from 0 to 1
 
-# Sum all middle elements (by index) of lists with key 0
-total_sum = 0
+second_chance_list = []
 
 for item in update:
-    if 0 in item:  # Check if key 0 exists
-        sublist = item[0]  # Get the sublist
-        if sublist:  # Ensure the sublist is not empty
-            middle_index = len(sublist) // 2  # Index of the middle element
-            average = sublist[middle_index]  # Get the middle element by index
-            total_sum += average  # Add to the total sum
+    if 1 in item:
+        second_chance_list.append(item[1])
 
-print("Sum of all middle elements by index from lists with key 0:", total_sum)
+print("Before sorting:", second_chance_list)
+
+# Sort elements in second_chance_list based on rules
+for index in range(len(second_chance_list)):
+    sorted = False  # Flag to check if a sorting pass is needed
+    while not sorted:
+        sorted = True  # Assume sorted unless we find a pair to swap
+        for j in range(len(second_chance_list[index])):
+            first_number = second_chance_list[index][j]
+            for k in range(j + 1, len(second_chance_list[index])):
+                second_number = second_chance_list[index][k]
+                if (second_number, first_number) in rules:
+                    # If we find that second_number should come before first_number
+                    second_chance_list[index].pop(k)  # Remove second_number
+                    second_chance_list[index].insert(j, second_number)  # Insert it before first_number
+                    sorted = False  # Mark that we made a change, we need another pass
+                    break  # Restart checking from the start of the inner loop
+            if not sorted:  # If we already made a swap, we don't need to check further
+                break
+
+print("After sorting:", second_chance_list)
+
+total_sum = 0
+
+for line in second_chance_list:
+    total_sum += line[len(line) // 2]
+
+print(total_sum)
