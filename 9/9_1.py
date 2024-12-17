@@ -27,12 +27,13 @@ for i in range(0,len(numbers)):
         for j in range (numbers[i]):
             data_set.append(".")
 
+
 for k in range(len(data_set) - 1, -1, -1):
         if "." in data_set[:k]:
             data_set[data_set.index(".")] = data_set[k]
             data_set[k] = "."
         else:
-            print("Done")
+            print("Done", k)
 
 check_sum = 0
 

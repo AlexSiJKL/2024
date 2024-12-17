@@ -1,29 +1,27 @@
-from itertools import product
+import os.path
 
-# Функция для перебора всех вариантов выражений с + и *
-def generate_expressions(input_string):
-    # Разделяем строку на числа
-    numbers = input_string.split(", ")
-    
-    # Генерируем все комбинации операторов для (количество чисел - 1)
-    operators = ['+', '*']
-    combinations = product(operators, repeat=len(numbers) - 1)
-    
-    results = []  # Список для хранения выражений и результатов
-    # Перебираем все комбинации операторов
-    for combo in combinations:
-        # Собираем выражение
-        expression = "".join(f"{numbers[i]}{combo[i]}" for i in range(len(combo))) + numbers[-1]
-        # Вычисляем результат
-        result = eval(expression)
-        results.append((expression, result))
-    
-    return results
+# Данные из вашего словаря
+data = {
+    (0, 6): '0', (1, 3): '0', (1, 8): '0', (2, 4): '0', (3, 2): '0', (3, 7): '0',
+    (4, 4): '0', (5, 1): '0', (5, 6): 'A', (6, 3): '0', (8, 8): 'A', (9, 9): 'A',
+    (2, 0): '#', (2, 10): '#', (4, 2): '#', (6, 8): '#', (8, 2): '#', (0, 2): '#',
+    (3, 5): '#', (5, 11): '#', (7, 5): '#', (11, 3): '#', (3, 0): '#', (7, 0): '#',
+    (1, 6): '#', (4, 0): '#', (1, 1): '#', (4, 10): '#', (0, 4): '#', (6, 4): '#',
+    (10, 2): '#', (0, 1): '#', (9, 4): '#', (0, 11): '#', (2, 5): '#', (11, 10): '#',
+    (7, 7): '#', (10, 10): '#'
+}
 
-# Пример использования
-input_string = "9, 7, 18, 13"  # Можно заменить на любую строку с числами
-expressions = generate_expressions(input_string)
+# Определение размеров матрицы
+max_row = max(key[0] for key in data.keys()) + 1  # +1 для правильного индекса
+max_col = max(key[1] for key in data.keys()) + 1  # +1 для правильного индекса
 
-# Печатаем все выражения и их результаты
-for expr, res in expressions:
-    print(f"{expr} = {res}")
+# Создание матрицы, заполненной '.'
+matrix = [['.' for _ in range(max_col)] for _ in range(max_row)]
+
+# Заполнение матрицы значениями из словаря
+for (row, col), char in data.items():
+    matrix[row][col] = char
+
+# Вывод матрицы
+for row in matrix:
+    print(' '.join(row))
